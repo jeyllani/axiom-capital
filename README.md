@@ -9,15 +9,22 @@ Axiom Capital is a quantitative investment platform designed to bridge the gap b
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-## 📸 Platform Preview
+</div>
 
-### 🔬 Michaud Resampling
+## Platform Preview
+
+<div align="center">
+
+### Michaud Resampling
+
 The engine performs Monte Carlo simulations to mitigate estimation errors, visualizing sector stability through wave charts.
 
 ![Michaud Resampling](assets/resampling.png)
 
+</div>
 
-### 🎛️ User Experience & Expert Modules
+### User Experience & Expert Modules
+<div align="center">
 
 | **Utility Optimization** | **Risk Architecture** |
 |:---:|:---:|
@@ -73,9 +80,9 @@ Implementation of various portfolio allocation strategies:
 ## Technical Overview
 
 ### Optimization Engine
-The platform utilizes **CVXPY** for convex optimization.
-*   **Solver**: The system defaults to **CLARABEL** (open-source) for broad compatibility.
-*   **MOSEK Detection**: It automatically detects if a **MOSEK** license is available and switches to it for enhanced performance and stability in complex problems.
+The platform utilizes **CVXPY** for convex optimization with a solver-agnostic architecture.
+*   **Primary Solver**: Defaults to **CLARABEL** (open-source) for broad compatibility and robust performance.
+*   **Commercial Solvers**: The architecture is designed to support **MOSEK** and **GUROBI** for large-scale industrial problems, automatically detecting available licenses for enhanced stability.
 
 ### Data
 The platform currently relies on **YFinance** for market data acquisition. The architecture is designed to support additional data sources.
@@ -128,6 +135,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Supervised by:**
 Prof. Marc-Aurèle Divernois
+
+## ⚖️ Data Limitations & Academic Honesty
+
+### Survivorship Bias
+This project currently utilizes **YFinance** as its primary data source. Consequently, the historical analysis is subject to **survivorship bias**, as it only includes assets currently listed on exchanges. Companies that went bankrupt or were delisted during the backtest period (2008-2024) are excluded.
+*   *Impact*: Historical returns may be slightly overstated, and volatility understated.
+*   *Mitigation*: The "Universe Selection" module includes a liquidity filter to ensure only tradeable assets are selected, but the bias remains inherent to the data source.
+
+### Lookback Period
+The analysis starts in **2010**, using a **24-month lookback window** (data from 2008) to initialize covariance matrices. This "warm-up" period ensures that the first point on the chart (Jan 2010) is mathematically rigorous, based on 2 years of prior volatility history.
 
 ## ⚠️ Disclaimer
 
