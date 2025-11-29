@@ -143,12 +143,27 @@ def render_chatbot(page_title=None):
             border-radius: 0 4px 4px 0 !important;
             background-color: #38bdf8 !important;
             background: #38bdf8 !important; /* Override gradient */
+            background-image: none !important; /* Explicitly remove gradient image */
             color: #0f172a !important;
             border: none !important;
             border-top: none !important; /* Override column border */
             box-shadow: none !important;
             height: auto !important;
             padding: 10px !important;
+            transform: none !important; /* Prevent hover transform */
+            margin: 0 !important;
+            min-height: 0 !important; /* Override min-height from cards */
+        }
+        
+        /* Prevent Hover effects from landing page */
+        div[data-testid="stPopoverBody"] [data-testid="column"] button:hover,
+        div[data-testid="stPopoverBody"] div[data-testid="stForm"] button:hover {
+            background-color: #7dd3fc !important;
+            background: #7dd3fc !important;
+            color: #0f172a !important;
+            transform: none !important;
+            box-shadow: none !important;
+            border: none !important;
         }
         
         /* 5. Compact Text & Spacing */
