@@ -136,12 +136,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Supervised by:**
 Prof. Marc-Aurèle Divernois
 
-## ⚖️ Data Limitations & Academic Honesty
+## ⚖️ Data Limitations
 
 ### Survivorship Bias
 This project currently utilizes **YFinance** as its primary data source. Consequently, the historical analysis is subject to **survivorship bias**, as it only includes assets currently listed on exchanges. Companies that went bankrupt or were delisted during the backtest period (2008-2024) are excluded.
 *   *Impact*: Historical returns may be slightly overstated, and volatility understated.
-*   *Mitigation*: The "Universe Selection" module includes a liquidity filter to ensure only tradeable assets are selected, but the bias remains inherent to the data source.
+
 
 ### Lookback Period
 The analysis starts in **2010**, using a **24-month lookback window** (data from 2008) to initialize covariance matrices. This "warm-up" period ensures that the first point on the chart (Jan 2010) is mathematically rigorous, based on 2 years of prior volatility history.
