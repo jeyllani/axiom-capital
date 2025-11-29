@@ -137,11 +137,18 @@ def render_chatbot(page_title=None):
         }
         
         /* Petit fix pour éviter que le bouton "Submit" du formulaire prenne toute la largeur */
-        div[data-testid="stForm"] button {
+        /* High specificity to override landing_products.py column styles */
+        div[data-testid="stPopoverBody"] [data-testid="column"] button,
+        div[data-testid="stPopoverBody"] div[data-testid="stForm"] button {
             border-radius: 0 4px 4px 0 !important;
             background-color: #38bdf8 !important;
+            background: #38bdf8 !important; /* Override gradient */
             color: #0f172a !important;
             border: none !important;
+            border-top: none !important; /* Override column border */
+            box-shadow: none !important;
+            height: auto !important;
+            padding: 10px !important;
         }
         
         /* 5. Compact Text & Spacing */
