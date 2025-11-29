@@ -82,42 +82,72 @@ def render_chatbot(page_title=None):
     - Use the 'Current Location' description to understand what the user is seeing right now.
     """
 
-    # --- 4. CSS for Floating Button (Safe Version) ---
-    # We only target the popover container, which is standard.
+    # --- 4. CSS for Floating Button (Fixed Width Version) ---
     st.markdown("""
     <style>
-        /* Position the popover container fixed at bottom right */
-        [data-testid="stPopover"] {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: auto !important;
+        /* 1. Cible le conteneur principal du popover */
+        /* Note: Streamlit encapsule le popover dans une div avec data-testid="stPopover" */
+        
+        div[data-testid="stPopover"] {
+            position: fixed !important;
+            bottom: 30px !important;
+            right: 30px !important;
+            width: auto !important; /* EMPÊCHE DE PRENDRE TOUTE LA LARGEUR */
             height: auto !important;
-            z-index: 9999;
-            display: inline-block !important;
+            z-index: 99999 !important;
+            background: transparent !important;
+            border: none !important;
+        }
+
+        /* 2. Style du bouton rond (L'élément cliquable) */
+        div[data-testid="stPopover"] > button {
+            width: 60px !important;
+            height: 60px !important;
+            border-radius: 50% !important; /* Rond parfait */
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%) !important;
+            border: 2px solid #38bdf8 !important; /* Bordure plus visible */
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4) !important; /* Glow effect */
+            color: #38bdf8 !important;
+            font-size: 24px !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: all 0.3s ease !important;
+        }
+
+        /* 3. Hover Effect */
+        div[data-testid="stPopover"] > button:hover {
+            transform: scale(1.1) !important;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 100%) !important;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.6) !important;
+            border-color: #7dd3fc !important;
+        }
+
+        /* 4. Gestion de la fenêtre ouverte (Le Chat lui-même) */
+        /* On veut éviter qu'elle soit trop large ou mal placée */
+        div[data-testid="stPopoverBody"] {
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+            background-color: #0f172a !important; /* Fond sombre cohérent */
+            width: 350px !important; /* Largeur fixe pour le chat */
+            max-height: 500px !important;
         }
         
-        /* Style the button inside */
-        [data-testid="stPopover"] > button {
-            width: 60px;
-            height: 60px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
-            border: 1px solid #38bdf8;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            color: #38bdf8;
-            font-size: 24px;
-        }
-        
-        [data-testid="stPopover"] > button:hover {
-            transform: scale(1.1);
-            background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+        /* Petit fix pour éviter que le bouton "Submit" du formulaire prenne toute la largeur */
+        div[data-testid="stForm"] button {
+            border-radius: 0 4px 4px 0 !important;
         }
     </style>
     """, unsafe_allow_html=True)
 
     # --- 5. The Popover (Stable) ---
-    with st.popover("💬", use_container_width=False):
+    # Création d'un conteneur vide en bas de page pour injecter le popover
+    placeholder = st.empty()
+    
+    with placeholder:
+        with st.popover("💬", use_container_width=False):
         st.markdown("### 🤖 Axiom Assistant")
         st.markdown("---")
         
