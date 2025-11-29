@@ -13,7 +13,7 @@ Axiom Capital is a quantitative investment platform designed to bridge the gap b
 
 ## Platform Preview
 
-<div align="center">
+
 
 ### Michaud Resampling
 
@@ -21,7 +21,7 @@ The engine performs Monte Carlo simulations to mitigate estimation errors, visua
 
 ![Michaud Resampling](assets/resampling.png)
 
-</div>
+
 
 ### User Experience & Expert Modules
 <div align="center">
@@ -29,7 +29,7 @@ The engine performs Monte Carlo simulations to mitigate estimation errors, visua
 | **Utility Optimization** | **Risk Architecture** |
 |:---:|:---:|
 | ![Utility View](assets/expert_utility.png) | ![Risk View](assets/expert_risk.png) |
-| *Maximize CRRA Utility with custom Risk Aversion ($\lambda$)* | *Deep risk breakdown (ERC vs Target Vol) & Constraints* |
+| *Maximize CRRA Utility with custom Risk Aversion (λ)* | *Deep risk breakdown (ERC) & Constraints* |
 
 | **Automated Advisory** | **AI Assistant** |
 |:---:|:---:|
