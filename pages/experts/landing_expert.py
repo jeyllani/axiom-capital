@@ -6,6 +6,12 @@ st.markdown("""
 <style>
     [data-testid="stSidebar"] {display: none;}
     
+    /* Reduce top padding */
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
     /* Global Font */
     h1, h2, h3, p {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -135,7 +141,7 @@ st.markdown("""
     /* Hero Section */
     .hero-section {
         text-align: center;
-        padding: 50px 20px 40px;
+        padding: 0px 20px 40px; /* Reduced top padding from 50px */
     }
 
 </style>
@@ -192,7 +198,7 @@ with col3:
     st.markdown('<div class="category-header header-frontier">📈 Efficient Frontier</div>', unsafe_allow_html=True)
     product_btn(
         "Frontier Visualization",
-        "Explore the full efficient set. Visualize the Capital Market Line (CML) and identify optimal portfolios across the risk spectrum.",
+        "Map the full investment universe. Visualize the Efficient Frontier to benchmark your strategy against the theoretical mathematical optimums.",
         "pages/experts/expert_frontier.py",
         "btn_frontier"
     )

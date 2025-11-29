@@ -6,6 +6,12 @@ st.markdown("""
 <style>
     [data-testid="stSidebar"] {display: none;}
     
+    /* Reduce top padding */
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
     /* Global Font */
     h1, h2, h3, p {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -96,7 +102,10 @@ st.markdown("""
         border-top: 4px solid #38bdf8 !important;
         background: linear-gradient(180deg, rgba(56, 189, 248, 0.05) 0%, rgba(30, 41, 59, 0.4) 100%) !important;
     }
-    [data-testid="column"]:nth-of-type(1) .stButton button::first-line {
+    [data-testid="column"]:nth-of-type(1) .stButton button::first-line,
+    [data-testid="column"]:nth-of-type(1) button::first-line,
+    [data-testid="stColumn"]:nth-of-type(1) .stButton button::first-line,
+    [data-testid="stColumn"]:nth-of-type(1) button::first-line {
         color: #38bdf8 !important;
         font-weight: 700 !important;
         font-size: 1.3rem !important;
@@ -117,7 +126,10 @@ st.markdown("""
         border-top: 4px solid #a855f7 !important;
         background: linear-gradient(180deg, rgba(168, 85, 247, 0.05) 0%, rgba(30, 41, 59, 0.4) 100%) !important;
     }
-    [data-testid="column"]:nth-of-type(2) .stButton button::first-line {
+    [data-testid="column"]:nth-of-type(2) .stButton button::first-line,
+    [data-testid="column"]:nth-of-type(2) button::first-line,
+    [data-testid="stColumn"]:nth-of-type(2) .stButton button::first-line,
+    [data-testid="stColumn"]:nth-of-type(2) button::first-line {
         color: #a855f7 !important;
         font-weight: 700 !important;
         font-size: 1.3rem !important;
@@ -138,7 +150,10 @@ st.markdown("""
         border-top: 4px solid #f97316 !important;
         background: linear-gradient(180deg, rgba(249, 115, 22, 0.05) 0%, rgba(30, 41, 59, 0.4) 100%) !important;
     }
-    [data-testid="column"]:nth-of-type(3) .stButton button::first-line {
+    [data-testid="column"]:nth-of-type(3) .stButton button::first-line,
+    [data-testid="column"]:nth-of-type(3) button::first-line,
+    [data-testid="stColumn"]:nth-of-type(3) .stButton button::first-line,
+    [data-testid="stColumn"]:nth-of-type(3) button::first-line {
         color: #f97316 !important;
         font-weight: 700 !important;
         font-size: 1.3rem !important;
@@ -171,7 +186,7 @@ st.markdown("""
     /* Hero Section */
     .hero-section {
         text-align: center;
-        padding: 50px 20px 30px;
+        padding: 0px 20px 30px; /* Reduced top padding from 50px */
     }
     
 </style>

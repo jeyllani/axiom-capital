@@ -9,6 +9,12 @@ st.markdown("""
 <style>
     [data-testid="stSidebar"] {display: none;}
     
+    /* Reduce top padding */
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
     /* Global Font */
     h1, h2, h3, p, label, .stRadio, .stSelectbox {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -160,6 +166,7 @@ st.markdown("""
     .axiom-header {
         text-align: center;
         margin-bottom: 50px;
+        margin-top: -20px; /* Pull up closer to the button */
     }
     .axiom-title {
         font-size: 2.5rem;

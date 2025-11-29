@@ -5,6 +5,12 @@ st.markdown("""
 <style>
     [data-testid="stSidebar"] {display: none;}
     
+    /* Reduce top padding */
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
     /* Global Font */
     h1, h2, h3, p, div {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -13,7 +19,7 @@ st.markdown("""
     /* Hero Section - Clean (No Box) */
     .hero-container {
         text-align: center;
-        padding: 40px 20px 20px;
+        padding: 0px 20px 20px; /* Reduced top padding from 40px */
         margin-bottom: 40px;
     }
     
@@ -128,8 +134,29 @@ st.markdown("""
     .theme-funds { border-bottom: 4px solid #3b82f6; }
     .theme-desk { border-bottom: 4px solid #f97316; }
 
+    /* Back Button Styling */
+    div[data-testid="stVerticalBlock"] > div:first-child .stButton button {
+        width: auto !important;
+        padding: 8px 20px !important;
+        background-color: transparent !important;
+        border: 1px solid #475569 !important;
+        color: #94a3b8 !important;
+        border-radius: 20px !important;
+        font-size: 14px !important;
+        transition: all 0.2s ease;
+    }
+    div[data-testid="stVerticalBlock"] > div:first-child .stButton button:hover {
+        border-color: #cbd5e1 !important;
+        color: #f8fafc !important;
+        background-color: rgba(255, 255, 255, 0.05) !important;
+    }
+
 </style>
 """, unsafe_allow_html=True)
+
+# --- Navigation (Back Button) ---
+if st.button("⬅️ Back to Home"):
+    st.switch_page("pages/index.py")
 
 # --- Hero Section (Clean) ---
 st.markdown("""
