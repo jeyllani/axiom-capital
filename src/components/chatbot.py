@@ -24,11 +24,13 @@ def render_chatbot(page_title=None):
     try:
         query_params = st.query_params
         if query_params.get("chat") == "true":
+            # st.toast("Chatbot: Auto-Open Triggered!", icon="🤖") # Debug
             st.session_state['auto_open_chat'] = True
             # Clear the param so it doesn't re-open on reload
             # Note: st.query_params is mutable in newer Streamlit versions
             query_params["chat"] = "false"
-    except:
+    except Exception as e:
+        # st.toast(f"Chatbot Error: {e}", icon="⚠️") # Debug
         pass
 
     client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
@@ -113,9 +115,12 @@ def render_chatbot(page_title=None):
         }
 
         /* 2. Style du bouton rond (L'élément cliquable) */
-        div[data-testid="stPopover"] > button {
+        /* Target the button specifically inside the popover container */
+        div[data-testid="stPopover"] button {
             width: 80px !important;
             height: 80px !important;
+            min-width: 80px !important; /* Force min-width */
+            min-height: 80px !important; /* Force min-height */
             border-radius: 50% !important; /* Rond parfait */
             background: linear-gradient(135deg, #0f172a 0%, #334155 100%) !important;
             border: 2px solid #38bdf8 !important; /* Bordure plus visible */
@@ -127,6 +132,12 @@ def render_chatbot(page_title=None):
             align-items: center !important;
             justify-content: center !important;
             transition: all 0.3s ease !important;
+            margin: 0 !important;
+        }
+        
+        /* HIDE THE CHEVRON (The 'v' arrow) */
+        div[data-testid="stPopover"] button svg {
+            display: none !important;
         }
 
         /* 3. Hover Effect */
@@ -269,7 +280,9 @@ def render_chatbot(page_title=None):
         components.html("""
             <script>
                 console.log("Attempting to auto-open chatbot...");
+                var attempts = 0;
                 const checkExist = setInterval(function() {
+                   attempts++;
                    // Target the button inside the popover container
                    const btn = window.parent.document.querySelector('div[data-testid="stPopover"] button');
                    if (btn) {
@@ -277,10 +290,11 @@ def render_chatbot(page_title=None):
                       btn.click();
                       clearInterval(checkExist);
                    }
-                }, 200); # Check every 200ms
-                
-                // Stop checking after 5 seconds to save resources
-                setTimeout(() => { clearInterval(checkExist); }, 5000);
+                   if (attempts > 50) { // 10 seconds
+                       console.log("Chatbot button not found, giving up.");
+                       clearInterval(checkExist);
+                   }
+                }, 200);
             </script>
         """, height=0, width=0)
         

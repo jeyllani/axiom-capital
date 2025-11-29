@@ -17,8 +17,7 @@ axiom-capital/
 ├── src/                    # Core Logic & Source Code
 │   ├── components/         #    - UI Components (Chatbot, Charts)
 │   ├── portfolio_engine/   #    - Optimization Engines
-│   ├── products/           #    - Product Definitions & Metadata
-│   └── data/               #    - Data Processing Pipelines
+│   └── products/           #    - Product Definitions & Metadata
 ├── data/                   # Data Storage
 │   └── yfinance/           #    - Market Data (YFinance)
 └── scripts/                # Utility & Maintenance Scripts
