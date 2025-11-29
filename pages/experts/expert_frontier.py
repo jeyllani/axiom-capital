@@ -727,31 +727,42 @@ selection_method = st.sidebar.radio("Method", ["Top Market Cap", "Random Selecti
 n_stocks = st.sidebar.slider("Number of Assets", min_value=10, max_value=100, value=default_n_assets, step=10)
 # lookback_months removed as per request (default 24 used internally)
 
-# Update loader config if changed (without reload)
-if st.session_state.loader:
-    st.session_state.loader.config['n_stocks'] = n_stocks
-    st.session_state.loader.config['selection_method'] = 'random' if selection_method == 'Random Selection' else 'top_market_cap'
-    # st.session_state.loader.config['lookback_months'] = lookback_months # Removed
+# Construct Config from Sidebar Inputs
+config = {
+    'source': str(data_source),
+    'data_dir': 'data/yfinance', # Standardized path
+    'input_file': 'financial_universe_clean.parquet',
+    'test_start': str(test_start),
+    'test_end': str(test_end),
+    'lookback_months': 24, # Default internal value
+    'selection_method': 'top_market_cap' if selection_method == "Top Market Cap" else 'random',
+    'n_stocks': int(n_stocks),
+    'rf_file': 'risk_free.parquet'
+}
 
-# Check if data is loaded
-# Auto-Load Logic
+# Auto-Load / Reactive Reload Logic
+should_reload = False
 if st.session_state.loader is None:
-    with st.spinner("Initializing Data..."):
-        config = {
-            'source': 'YFINANCE',
-            'n_stocks': default_n_assets,
-            'test_start': str(default_start),
-            'test_end': str(default_end),
-            'lookback_months': 24,
-            'selection_method': 'top_market_cap',
-            'data_dir': 'data/yfinance',
-            'input_file': 'financial_universe_clean.parquet',
-            'rf_file': 'risk_free.parquet'
-        }
+    should_reload = True
+else:
+    # Check if critical parameters changed
+    prev_config = st.session_state.loader.config
+    
+    # Robust comparison
+    if (str(prev_config.get('source')) != config['source'] or
+        str(prev_config.get('test_start')) != config['test_start'] or
+        str(prev_config.get('test_end')) != config['test_end'] or
+        int(prev_config.get('n_stocks')) != config['n_stocks'] or
+        str(prev_config.get('selection_method')) != config['selection_method']):
+        should_reload = True
+
+if should_reload:
+    with st.spinner("Updating Universe Data..."):
         try:
             st.session_state.loader = load_data(config)
+            st.rerun()
         except Exception as e:
-            st.error(f"Failed to load default data: {e}")
+            st.error(f"Error loading data: {e}")
             st.stop()
 
 if st.session_state.loader:

@@ -685,6 +685,7 @@ if run_btn:
 
                 st.session_state.risk_results = results
                 st.session_state.risk_optimizer_mode = optimizer_mode
+                st.toast("Backtest Complete!", icon="✅")
 
         except Exception as e:
             st.error(f"Optimization Failed: {e}")
