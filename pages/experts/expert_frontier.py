@@ -690,7 +690,7 @@ def display_frontier_results(results, loader, title, benchmark_results=None):
         )
 
 # --- SIDEBAR CONFIGURATION ---
-st.sidebar.page_link("pages/experts/landing_expert.py", label="Back to Expert Home", icon="⬅️")
+# st.sidebar.page_link("pages/experts/landing_expert.py", label="Back to Expert Home", icon="⬅️")
 st.sidebar.header("1. Data Configuration")
 
 # Defaults
