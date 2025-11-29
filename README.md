@@ -2,6 +2,33 @@
 
 Axiom Capital is a quantitative investment platform designed to bridge the gap between institutional-grade finance and accessible wealth management. It integrates portfolio optimization engines, risk management frameworks, and a curated selection of investment strategies.
 
+
+<div align="center">
+
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://axiom-capital.streamlit.app)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+
+## 📸 Platform Preview
+
+### 🔬 Michaud Resampling
+The engine performs Monte Carlo simulations to mitigate estimation errors, visualizing sector stability through wave charts.
+
+![Michaud Resampling](assets/resampling.png)
+
+
+### 🎛️ User Experience & Expert Modules
+
+| **Utility Optimization** | **Risk Architecture** |
+|:---:|:---:|
+| ![Utility View](assets/expert_utility.png) | ![Risk View](assets/expert_risk.png) |
+| *Maximize CRRA Utility with custom Risk Aversion ($\lambda$)* | *Deep risk breakdown (ERC vs Target Vol) & Constraints* |
+
+| **Automated Advisory** | **AI Assistant** |
+|:---:|:---:|
+| ![Novice View](assets/novice_dashboard.png) | ![AI Chatbot](assets/ai_assistant.png) |
+| *Guided profiling and automated portfolio construction* | *Context-aware QARM-Bot analyzing live results* |
+
 ## Project Architecture
 
 ```ascii
@@ -90,8 +117,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 *   **Stella Marinelli**
 *   **Yannick Travasa**
 
+---
+
+### 🎓 Academic Context
+
 **HEC Lausanne - The Faculty of Business and Economics**
+*MSc in Finance | Quantitative Asset & Risk Management (QARM)*
 
-*Quantitative Asset & Risk Management (QARM) II*
+**Supervised by:**
+Prof. Marc-Aurèle Divernois
 
-*Supervised by Prof. Marc-Aurèle Divernois*
+## ⚠️ Disclaimer
+
+This project is for **educational and academic purposes only**. It does not constitute financial advice, investment recommendations, or an offer to sell securities. The optimization models (Markowitz, Risk Parity) are based on historical data, which is not a guarantee of future returns. 
+
+**Axiom Capital** is a fictional entity created for the QARM Master's course at HEC Lausanne.
