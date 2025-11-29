@@ -1,4 +1,4 @@
-# Axiom Capital - Quantitative Asset & Risk Management Platform
+## Axiom Capital - Quantitative Asset & Risk Management Platform
 
 Axiom Capital is a quantitative investment platform designed to bridge the gap between institutional-grade finance and accessible wealth management. It integrates portfolio optimization engines, risk management frameworks, and a curated selection of investment strategies.
 
