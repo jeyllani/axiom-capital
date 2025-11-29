@@ -93,5 +93,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 *   **Yannick Travasa**
 
 **HEC Lausanne - The Faculty of Business and Economics**
+
 *Quantitative Asset & Risk Management (QARM) II*
+
 *Supervised by Prof. Marc-Aurèle Divernois*
