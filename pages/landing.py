@@ -271,7 +271,7 @@ with tab_quant:
 
 st.markdown("""
 <div style="text-align: center; margin-top: 50px; color: #64748b; font-size: 0.8rem; border-top: 1px solid #1e293b; padding-top: 20px;">
-    © 2024 Axiom Capital. Proprietary Quantitative Models. <br>
+    © 2025 Axiom Capital. <br>
     Past performance is not indicative of future results.
 </div>
 """, unsafe_allow_html=True)

@@ -383,6 +383,6 @@ st.markdown("""
 st.markdown("""
 <div class="footer">
     <p>Geneva - Lausanne - Lonay - Vevey</p>
-    <p style="margin-top: 20px;">© 2024 Axiom Capital.</p>
+    <p style="margin-top: 20px;">© 2025 Axiom Capital.</p>
 </div>
 """, unsafe_allow_html=True)

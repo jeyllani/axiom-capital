@@ -125,39 +125,62 @@ def render_chatbot(page_title=None):
         }
 
         /* 4. Gestion de la fenêtre ouverte (Le Chat lui-même) */
-        /* On veut éviter qu'elle soit trop large ou mal placée */
         div[data-testid="stPopoverBody"] {
-            border: 1px solid rgba(255,255,255,0.1) !important;
-            border-radius: 12px !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
-            background-color: #0f172a !important; /* Fond sombre cohérent */
-            width: 350px !important; /* Largeur fixe pour le chat */
-            max-height: 500px !important;
+            border: 1px solid rgba(56, 189, 248, 0.2) !important; /* Bordure subtile bleue */
+            border-radius: 16px !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6) !important;
+            background: rgba(15, 23, 42, 0.95) !important; /* Slate 900 semi-transparent */
+            backdrop-filter: blur(10px) !important; /* Effet verre */
+            width: 400px !important; /* Plus large */
+            max-height: 700px !important; /* Plus haut */
+            padding: 0 !important; /* Remove default padding for edge-to-edge look */
         }
         
         /* Petit fix pour éviter que le bouton "Submit" du formulaire prenne toute la largeur */
         div[data-testid="stForm"] button {
             border-radius: 0 4px 4px 0 !important;
+            background-color: #38bdf8 !important;
+            color: #0f172a !important;
+            border: none !important;
+        }
+        
+        /* 5. Compact Text & Spacing */
+        .stChatMessage p {
+            font-size: 0.95rem !important;
+            line-height: 1.5 !important;
+        }
+        .stChatMessage {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+            background-color: transparent !important;
+        }
+        
+        /* User Message Style */
+        div[data-testid="chatAvatarIcon-user"] {
+            background-color: #38bdf8 !important;
         }
     </style>
     """, unsafe_allow_html=True)
 
     # --- 5. The Popover (Stable) ---
-    # Création d'un conteneur vide en bas de page pour injecter le popover
-    placeholder = st.empty()
-    
-    with placeholder:
-        with st.popover("💬", use_container_width=False):
-        st.markdown("### 🤖 Axiom Assistant")
-        st.markdown("---")
+    with st.popover("💬", use_container_width=False):
+        # Header styled to match the box
+        st.markdown(
+            "<div style='background: rgba(30, 41, 59, 0.5); padding: 20px 15px 15px 15px; border-bottom: 1px solid rgba(255,255,255,0.1); margin: -1rem -1rem 5px -1rem;'>"
+            "<h3 style='text-align: center; margin: 0; font-size: 1.2rem; color: #f8fafc;'>🤖 Axiom Assistant</h3>"
+            "</div>", 
+            unsafe_allow_html=True
+        )
         
         # Display History
-        messages_container = st.container(height=350)
+        messages_container = st.container(height=380)
         for msg in st.session_state.messages:
             with messages_container.chat_message(msg["role"]):
                 st.write(msg["content"])
         
-        st.markdown("---")
+        # Input & Response (Using text_input + button for stability)
+        # We use a form to allow 'Enter' to submit
+        st.markdown("<div style='margin-top: -15px;'></div>", unsafe_allow_html=True) # Pull form up
         
         # Input & Response (Using text_input + button for stability)
         # We use a form to allow 'Enter' to submit
