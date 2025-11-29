@@ -119,17 +119,32 @@ def render_chatbot(page_title=None):
         st.markdown("---")
         
         # Display History
-        messages_container = st.container(height=400)
+        messages_container = st.container(height=350)
         for msg in st.session_state.messages:
             with messages_container.chat_message(msg["role"]):
                 st.write(msg["content"])
         
-        # Input & Response
-        if prompt := st.chat_input("Ask about strategies...", key="chat_input_widget"):
+        st.markdown("---")
+        
+        # Input & Response (Using text_input + button for stability)
+        # We use a form to allow 'Enter' to submit
+        with st.form(key="chat_form", clear_on_submit=True):
+            cols = st.columns([0.85, 0.15])
+            with cols[0]:
+                user_input = st.text_input(
+                    "Ask about strategies...", 
+                    placeholder="Type your message...", 
+                    label_visibility="collapsed",
+                    key="chat_input_text"
+                )
+            with cols[1]:
+                submit_button = st.form_submit_button("➤")
+        
+        if submit_button and user_input:
             # 1. Add User Message
-            st.session_state.messages.append({"role": "user", "content": prompt})
+            st.session_state.messages.append({"role": "user", "content": user_input})
             with messages_container.chat_message("user"):
-                st.write(prompt)
+                st.write(user_input)
             
             # 2. Context Injection
             page_desc = PAGE_DESCRIPTIONS.get(str(page_title), "A section of the Axiom Capital application.")
