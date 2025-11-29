@@ -1,10 +1,10 @@
 import streamlit as st
 
-st.set_page_config(page_title="QARM", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Axiom Capital", page_icon="🏛️", layout="wide", initial_sidebar_state="collapsed")
 
 # Define Pages
-showcase_page = st.Page("pages/index.py", title="Axiom Capital", icon="🏛️", default=True)
-home_page = st.Page("pages/landing.py", title="Wealth Portal", icon="🔐")
+showcase_page = st.Page("pages/index.py", title="Axiom Capital", icon="✨", default=True)
+home_page = st.Page("pages/landing.py", title="Wealth Portal", icon="🏛️")
 expert_home = st.Page("pages/experts/landing_expert.py", title="Expert Home", icon="🚀")
 expert_utility = st.Page("pages/experts/expert_utility.py", title="Utility Maximization", icon="📊")
 expert_risk = st.Page("pages/experts/expert_risk.py", title="Risk Architecture", icon="🛡️")
