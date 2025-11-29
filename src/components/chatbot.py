@@ -155,9 +155,10 @@ def render_chatbot(page_title=None):
             box-shadow: 0 20px 50px rgba(0,0,0,0.6) !important;
             background: rgba(15, 23, 42, 0.95) !important; /* Slate 900 semi-transparent */
             backdrop-filter: blur(10px) !important; /* Effet verre */
-            width: 400px !important; /* Plus large */
+            width: 400px !important; /* Largeur standard */
             max-height: 700px !important; /* Plus haut */
             padding: 0 !important; /* Remove default padding for edge-to-edge look */
+            overflow-x: hidden !important; /* Hide horizontal scrollbar */
         }
         
         /* Petit fix pour éviter que le bouton "Submit" du formulaire prenne toute la largeur */
@@ -204,6 +205,12 @@ def render_chatbot(page_title=None):
         /* User Message Style */
         div[data-testid="chatAvatarIcon-user"] {
             background-color: #38bdf8 !important;
+        }
+
+        /* 6. Input Field Styling (Smaller Text) */
+        div[data-testid="stPopoverBody"] input[type="text"] {
+            font-size: 14px !important;
+            height: 40px !important;
         }
     </style>
     """, unsafe_allow_html=True)
