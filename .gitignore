@@ -36,5 +36,4 @@ dist/
 
 # VS Code SFTP Config
 .vscode/
-ftp_deploy/.vscode/
 ftp_deploy/
