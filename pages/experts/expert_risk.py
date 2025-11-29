@@ -74,7 +74,7 @@ def display_metric_card(title, value, prefix="", suffix="", color="#F3F4F6", del
     </div>
     """, unsafe_allow_html=True)
 
-def plot_sector_allocation(weights_history, dates, sector_map, title):
+def plot_sector_allocation(weights_history, dates, sector_map, title, key=None):
     """Helper to plot sector allocation wave graph."""
     if not weights_history:
         return
@@ -145,7 +145,7 @@ def plot_sector_allocation(weights_history, dates, sector_map, title):
         showlegend=True
     )
     
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, key=key)
 
 def calculate_efficient_frontier(loader, points=50, solver=None):
     """
@@ -451,13 +451,13 @@ use_dynamic_rf = st.sidebar.checkbox("Use Dynamic Risk-Free Rate", value=False)
 with st.sidebar.expander("Advanced Parameters"):
     cov_method = st.sidebar.selectbox("Covariance Method", ["ledoit", "hist", "oas"], index=0)
 
-available_solver = get_optimal_solver()
-solver = st.sidebar.selectbox("Solver", [available_solver, "CLARABEL", "ECOS", "OSQP", "SCS"], index=0)
+    available_solver = get_optimal_solver()
+    solver = st.sidebar.selectbox("Solver", [available_solver, "CLARABEL", "ECOS", "OSQP", "SCS"], index=0)
 
-if available_solver == 'MOSEK':
-    st.sidebar.caption("🚀 **MOSEK Detected & Active**")
-else:
-    st.sidebar.caption("🛡️ **CLARABEL Active**")
+    if available_solver == 'MOSEK':
+        st.sidebar.caption("🚀 **MOSEK Detected & Active**")
+    else:
+        st.sidebar.caption("🛡️ **CLARABEL Active**")
 
 st.sidebar.markdown("---")
 run_btn = st.sidebar.button("▶️ Run Optimization", type="primary", use_container_width=True)
@@ -830,7 +830,7 @@ def display_risk_results(results, loader, title="Optimization Results", benchmar
                                      line=dict(color='#6B7280', width=1)), row=2, col=1)
 
         fig.update_layout(height=600, showlegend=True, margin=dict(l=20, r=20, t=40, b=20), hovermode="x unified", template="plotly_dark")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key=f"chart_cum_perf_{title}")
         
         # Monthly Returns
         st.subheader("Monthly Returns")
@@ -841,7 +841,7 @@ def display_risk_results(results, loader, title="Optimization Results", benchmar
         fig_bar.add_trace(go.Bar(x=monthly_rets.index, y=monthly_rets, marker_color=colors, name='Return'))
         fig_bar.update_layout(height=300, margin=dict(l=20, r=20, t=20, b=20), template="plotly_dark", showlegend=False)
         fig_bar.update_yaxes(tickformat=".1%")
-        st.plotly_chart(fig_bar, use_container_width=True)
+        st.plotly_chart(fig_bar, use_container_width=True, key=f"chart_monthly_{title}")
 
     with subtab_alloc:
         col_a1, col_a2 = st.columns([1, 1])
@@ -869,7 +869,7 @@ def display_risk_results(results, loader, title="Optimization Results", benchmar
             fig_pie = px.pie(sector_alloc, values='Weight', names='Sector', title="Exposure by Sector", hole=0.4, color_discrete_sequence=px.colors.qualitative.Prism)
             fig_pie.update_traces(textposition='inside', textinfo='percent+label')
             fig_pie.update_layout(showlegend=False, template="plotly_dark")
-            st.plotly_chart(fig_pie, use_container_width=True)
+            st.plotly_chart(fig_pie, use_container_width=True, key=f"chart_sector_{title}")
             
         with col_a2:
             st.subheader("Top 10 Holdings")
@@ -877,15 +877,15 @@ def display_risk_results(results, loader, title="Optimization Results", benchmar
             fig_bar = px.bar(top_10, x='Weight', y='Name', orientation='h', title="Top Assets", text_auto='.1%')
             fig_bar.update_layout(yaxis={'categoryorder':'total ascending'}, showlegend=False, template="plotly_dark")
             fig_bar.update_traces(marker_color='#22D3EE')
-            st.plotly_chart(fig_bar, use_container_width=True)
+            st.plotly_chart(fig_bar, use_container_width=True, key=f"chart_top10_{title}")
             
         st.subheader("Allocation History (Wave Graph)")
-        plot_sector_allocation(weights_history, results['dates'], loader.sector_map, "Sector Allocation Over Time")
+        plot_sector_allocation(weights_history, results['dates'], loader.sector_map, "Sector Allocation Over Time", key=f"chart_alloc_{title}")
 
         if benchmark_results:
             st.markdown("---")
             st.subheader("Base Strategy Allocation (Comparison)")
-            plot_sector_allocation(benchmark_results['weights'], benchmark_results['dates'], loader.sector_map, "Base Strategy Allocation")
+            plot_sector_allocation(benchmark_results['weights'], benchmark_results['dates'], loader.sector_map, "Base Strategy Allocation", key=f"chart_alloc_base_{title}")
 
         # Full Asset List (New)
         st.markdown("---")
@@ -915,14 +915,14 @@ def display_risk_results(results, loader, title="Optimization Results", benchmar
         fig_rsi.add_hline(y=70, line_dash="dash", line_color="red")
         fig_rsi.add_hline(y=30, line_dash="dash", line_color="green")
         fig_rsi.update_layout(title="RSI (14)", height=300, template="plotly_dark")
-        st.plotly_chart(fig_rsi, use_container_width=True)
+        st.plotly_chart(fig_rsi, use_container_width=True, key=f"chart_rsi_{title}")
         
         # MACD
         fig_macd = go.Figure()
         fig_macd.add_trace(go.Scatter(x=tech_df.index, y=tech_df['MACD'], name='MACD', line=dict(color='#3B82F6')))
         fig_macd.add_trace(go.Scatter(x=tech_df.index, y=tech_df['Signal'], name='Signal', line=dict(color='#F59E0B')))
         fig_macd.update_layout(title="MACD", height=300, template="plotly_dark")
-        st.plotly_chart(fig_macd, use_container_width=True)
+        st.plotly_chart(fig_macd, use_container_width=True, key=f"chart_macd_{title}")
         
         # Stochastic Oscillator
         fig_stoch = go.Figure()
@@ -931,7 +931,7 @@ def display_risk_results(results, loader, title="Optimization Results", benchmar
         fig_stoch.add_hline(y=80, line_dash="dash", line_color="red")
         fig_stoch.add_hline(y=20, line_dash="dash", line_color="green")
         fig_stoch.update_layout(title="Stochastic Oscillator", height=300, template="plotly_dark")
-        st.plotly_chart(fig_stoch, use_container_width=True)
+        st.plotly_chart(fig_stoch, use_container_width=True, key=f"chart_stoch_{title}")
         
     with subtab_details:
         st.subheader("Comprehensive Strategy Report")

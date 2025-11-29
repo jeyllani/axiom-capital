@@ -255,7 +255,7 @@ def display_portfolio_analysis(results, loader, title="Portfolio Analysis", benc
         fig.update_yaxes(title_text="Value", row=1, col=1)
         fig.update_yaxes(title_text="Drawdown", tickformat=".0%", row=2, col=1)
         
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, key=f"chart_cum_perf_{title}")
         
         # Monthly Returns
         st.subheader("Monthly Returns")
@@ -267,7 +267,7 @@ def display_portfolio_analysis(results, loader, title="Portfolio Analysis", benc
         fig_bar.add_trace(go.Bar(x=monthly_rets.index, y=monthly_rets, marker_color=colors, name='Return'))
         fig_bar.update_layout(height=300, margin=dict(l=20, r=20, t=20, b=20), template="plotly_dark", showlegend=False)
         fig_bar.update_yaxes(tickformat=".1%")
-        st.plotly_chart(fig_bar, use_container_width=True)
+        st.plotly_chart(fig_bar, use_container_width=True, key=f"chart_monthly_{title}")
 
     with tab2:
         # Final Allocation
@@ -302,7 +302,7 @@ def display_portfolio_analysis(results, loader, title="Portfolio Analysis", benc
                 fig_pie = px.pie(sector_alloc, values='Weight', names='Sector', title="Exposure by Sector", hole=0.4, color_discrete_sequence=px.colors.qualitative.Prism)
                 fig_pie.update_traces(textposition='inside', textinfo='percent+label')
                 fig_pie.update_layout(showlegend=False, template="plotly_dark")
-                st.plotly_chart(fig_pie, use_container_width=True)
+                st.plotly_chart(fig_pie, use_container_width=True, key=f"chart_sector_{title}")
                 
             with col_a2:
                 st.subheader("Top 10 Holdings")
@@ -310,15 +310,15 @@ def display_portfolio_analysis(results, loader, title="Portfolio Analysis", benc
                 fig_bar = px.bar(top_10, x='Weight', y='Name', orientation='h', title="Top Assets", text_auto='.1%')
                 fig_bar.update_layout(yaxis={'categoryorder':'total ascending'}, showlegend=False, template="plotly_dark")
                 fig_bar.update_traces(marker_color='#22D3EE')
-                st.plotly_chart(fig_bar, use_container_width=True)
+                st.plotly_chart(fig_bar, use_container_width=True, key=f"chart_top10_{title}")
                 
             st.subheader("Allocation History (Wave Graph)")
-            plot_sector_allocation(weights_history, dates, loader.sector_map, "Sector Allocation Over Time")
+            plot_sector_allocation(weights_history, dates, loader.sector_map, "Sector Allocation Over Time", key=f"chart_alloc_{title}")
             
             if benchmark_results:
                 st.markdown("---")
                 st.subheader("Base Strategy Allocation (Comparison)")
-                plot_sector_allocation(benchmark_results['weights'], benchmark_results['dates'], loader.sector_map, "Base Strategy Allocation")
+                plot_sector_allocation(benchmark_results['weights'], benchmark_results['dates'], loader.sector_map, "Base Strategy Allocation", key=f"chart_alloc_base_{title}")
 
             # Full Asset List (New)
             st.markdown("---")
@@ -347,7 +347,7 @@ def display_portfolio_analysis(results, loader, title="Portfolio Analysis", benc
         fig_rsi.add_hline(y=70, line_dash="dot", line_color="red", annotation_text="Overbought")
         fig_rsi.add_hline(y=30, line_dash="dot", line_color="green", annotation_text="Oversold")
         fig_rsi.update_layout(title="Relative Strength Index (RSI)", height=250, template="plotly_dark", yaxis_range=[0, 100], margin=dict(l=20, r=20, t=30, b=20))
-        st.plotly_chart(fig_rsi, use_container_width=True)
+        st.plotly_chart(fig_rsi, use_container_width=True, key=f"chart_rsi_{title}")
         
         # MACD
         fig_macd = go.Figure()
@@ -355,7 +355,7 @@ def display_portfolio_analysis(results, loader, title="Portfolio Analysis", benc
         fig_macd.add_trace(go.Scatter(x=df_tech.index, y=df_tech['Signal'], line=dict(color='#F472B6', width=2), name='Signal'))
         fig_macd.add_trace(go.Bar(x=df_tech.index, y=df_tech['MACD'] - df_tech['Signal'], marker_color='gray', name='Hist'))
         fig_macd.update_layout(title="MACD", height=250, template="plotly_dark", margin=dict(l=20, r=20, t=30, b=20))
-        st.plotly_chart(fig_macd, use_container_width=True)
+        st.plotly_chart(fig_macd, use_container_width=True, key=f"chart_macd_{title}")
 
         # Stochastic
         fig_stoch = go.Figure()
@@ -364,7 +364,7 @@ def display_portfolio_analysis(results, loader, title="Portfolio Analysis", benc
         fig_stoch.add_hline(y=80, line_dash="dot", line_color="red", annotation_text="Overbought")
         fig_stoch.add_hline(y=20, line_dash="dot", line_color="green", annotation_text="Oversold")
         fig_stoch.update_layout(title="Stochastic Oscillator", height=250, template="plotly_dark", yaxis_range=[0, 100], margin=dict(l=20, r=20, t=30, b=20))
-        st.plotly_chart(fig_stoch, use_container_width=True)
+        st.plotly_chart(fig_stoch, use_container_width=True, key=f"chart_stoch_{title}")
 
     with tab4:
         st.subheader("Comprehensive Strategy Report")
@@ -670,7 +670,7 @@ def run_resampling(loader, risk_aversion, sector_constraints, max_turnover, cost
     
     return results
 
-def plot_sector_allocation(weights_history, dates, sector_map, title):
+def plot_sector_allocation(weights_history, dates, sector_map, title, key=None):
     """Helper to plot sector allocation wave graph."""
     if not weights_history:
         return
@@ -742,7 +742,7 @@ def plot_sector_allocation(weights_history, dates, sector_map, title):
         showlegend=True
     )
     
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, key=key)
 
 def calculate_drawdown(series):
     """Calculates the drawdown series."""
