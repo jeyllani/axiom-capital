@@ -29,6 +29,8 @@ The engine performs Monte Carlo simulations to mitigate estimation errors, visua
 | ![Novice View](assets/novice_dashboard.png) | ![AI Chatbot](assets/ai_assistant.png) |
 | *Guided profiling and automated portfolio construction* | *Context-aware QARM-Bot analyzing live results* |
 
+</div>
+
 ## Project Architecture
 
 ```ascii
