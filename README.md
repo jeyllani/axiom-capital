@@ -5,7 +5,7 @@ Axiom Capital is a quantitative investment platform designed to bridge the gap b
 ## Project Architecture
 
 ```ascii
-VX/
+axiom-capital/
 ├── app.py                  # Main Application Entry Point
 ├── requirements.txt        # Python Dependencies
 ├── pages/                  # Streamlit Application Pages
@@ -21,7 +21,6 @@ VX/
 │   └── data/               #    - Data Processing Pipelines
 ├── data/                   # Data Storage
 │   └── yfinance/           #    - Market Data (YFinance)
-├── notebooks/              # Research & Analysis Notebooks
 └── scripts/                # Utility & Maintenance Scripts
 ```
 
