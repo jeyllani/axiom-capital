@@ -76,6 +76,22 @@ st.markdown("""
         transition: all 0.2s;
     }
     
+    /* Simulation Button (Primary) - Royal Blue */
+    .stButton button[kind="primary"] {
+        background: linear-gradient(90deg, #1e3a8a 0%, #172554 100%) !important;
+        border: 1px solid #3b82f6 !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.05em !important;
+        box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4) !important;
+    }
+    .stButton button[kind="primary"]:hover {
+        background: linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%) !important;
+        border-color: #60a5fa !important;
+        box-shadow: 0 6px 16px rgba(30, 58, 138, 0.6) !important;
+        transform: translateY(-2px) !important;
+    }
+    
     /* Simulator Card */
     .simulator-card {
         background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);

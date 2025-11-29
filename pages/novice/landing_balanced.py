@@ -6,6 +6,12 @@ st.markdown("""
 <style>
     [data-testid="stSidebar"] {display: none;}
     
+    /* Reduce top padding */
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+    
     /* Global Font */
     h1, h2, h3, p {
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -64,23 +70,35 @@ st.markdown("""
         color: #f1f5f9 !important;
     }
     
+    /* Category Headers */
+    .category-header {
+        font-size: 1.0rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 5px;
+        border-bottom: 2px solid #334155;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #a855f7; /* Purple */
+        border-color: #a855f7;
+    }
+    
     /* Marketing Section Styling */
     .marketing-box {
         margin-top: 40px;
-        padding: 30px;
-        background: rgba(168, 85, 247, 0.05);
-        border: 1px solid rgba(168, 85, 247, 0.2);
+        padding: 40px;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.6) 100%);
+        border: 1px solid #334155;
         border-radius: 16px;
         color: #cbd5e1;
+        text-align: center;
     }
     .marketing-title {
         color: #a855f7;
-        font-size: 1.2rem;
-        font-weight: 700;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-bottom: 20px;
+        letter-spacing: 0.05em;
     }
 
     /* ESG Button (Primary) */
@@ -113,6 +131,12 @@ st.markdown("""
         border-color: #34d399 !important;
         color: #ffffff !important;
     }
+    
+    /* Hero Section */
+    .hero-section {
+        text-align: center;
+        padding: 0px 20px 40px;
+    }
 
 </style>
 """, unsafe_allow_html=True)
@@ -121,37 +145,53 @@ st.markdown("""
 if st.button("⬅️ Back to Questionnaire"):
     st.switch_page("pages/novice/questionnaire.py")
 
-st.title("⚖️ Balanced Strategies")
-st.markdown("<h3 style='color: #94a3b8; font-weight: 300; margin-top: -10px;'>Optimal Risk-Reward Trade-off</h3>", unsafe_allow_html=True)
-st.markdown("---")
+# Hero Section
+st.markdown("""
+<div class="hero-section">
+    <h1 style="font-size: 2.8rem; font-weight: 300; margin-bottom: 10px; color: #f8fafc;">
+        Balanced <span style="font-weight: 700; color: #a855f7;">Strategies</span>
+    </h1>
+    <p style="font-size: 1.2rem; color: #cbd5e1; font-weight: 300; letter-spacing: 0.02em;">
+        Optimal Risk-Reward Trade-off.
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("###")
 
 # Product Grid
 col1, col2, col3 = st.columns(3, gap="medium")
 
-def product_btn(title, desc, page, key):
-    label = f"{title}\n\n{desc}"
+def product_btn(title, tagline, desc, page, key):
+    label = f"{title}\n\n{tagline}\n\n{desc}"
     if st.button(label, key=key, use_container_width=True):
         st.switch_page(page)
 
 with col1:
+    st.markdown('<div class="category-header">⚖️ Core Balanced</div>', unsafe_allow_html=True)
     product_btn(
         "Global Core Balanced",
+        "Efficient Frontier.",
         "Flagship strategy maximizing Sharpe Ratio. The mathematical optimal portfolio (λ=2.0).",
         "pages/products/balanced_1.py",
         "btn_bal_1"
     )
 
 with col2:
+    st.markdown('<div class="category-header">🚀 Dynamic Growth</div>', unsafe_allow_html=True)
     product_btn(
         "Global Dynamic Growth",
+        "Active Appreciation.",
         "Targets active capital appreciation with lower risk aversion for growth investors (λ=1.5).",
         "pages/products/balanced_2.py",
         "btn_bal_2"
     )
 
 with col3:
+    st.markdown('<div class="category-header">🌐 Risk Parity</div>', unsafe_allow_html=True)
     product_btn(
         "Global Risk Parity",
+        "True Diversification.",
         "Allocates based on risk contribution. True diversification for all environments.",
         "pages/products/balanced_3.py",
         "btn_bal_3"
@@ -160,7 +200,7 @@ with col3:
 # --- ESG Spotlight ---
 st.markdown("<h3 style='text-align: left; color: #10b981; margin-top: 40px;'>🌱 Sustainable Alpha</h3>", unsafe_allow_html=True)
 
-esg_text = "Global Sustainable Future\n\nInvest in a better world without compromising returns. Zero carbon exposure with optimized risk-adjusted performance."
+esg_text = "Global Sustainable Future\n\nAlign your wealth with your values.\n\nInvest in a better world without compromising returns. Zero carbon exposure with optimized risk-adjusted performance."
 
 if st.button(esg_text, type="primary", use_container_width=True):
     st.switch_page("pages/products/esg_1.py")
@@ -171,13 +211,13 @@ st.markdown("""
     <div class="marketing-title">
         <span>💡</span> The Power of Balance
     </div>
-    <p style="font-size: 1.05rem; line-height: 1.6;">
+    <p style="font-size: 1.1rem; line-height: 1.8; max-width: 800px; margin: 0 auto;">
         Achieve the perfect equilibrium between growth and stability. Our balanced strategies are engineered to capture 
         <b>market upside</b> while providing a robust cushion during downturns. This is the smart choice for medium to 
         long-term wealth preservation and growth, offering a smoother ride than pure equity strategies.
     </p>
-    <p style="font-size: 1.05rem; line-height: 1.6; margin-top: 10px;">
-        <i>"It is not timing the market, but time in the market that matters. A balanced approach keeps you invested through all cycles."</i>
+    <p style="font-size: 1.1rem; line-height: 1.8; margin-top: 15px; color: #94a3b8; font-style: italic;">
+        "It is not timing the market, but time in the market that matters. A balanced approach keeps you invested through all cycles."
     </p>
 </div>
 """, unsafe_allow_html=True)
