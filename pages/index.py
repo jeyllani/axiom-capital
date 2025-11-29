@@ -300,7 +300,7 @@ st.markdown("""
     <div class="nav-links">
         <a href="#philosophy" class="nav-item">Philosophy</a>
         <a href="#expertise" class="nav-item">Expertise</a>
-        <a href="landing" class="nav-btn" target="_self">Portal</a>
+        <a href="landing?chat=true" class="nav-btn" target="_self">Portal</a>
     </div>
 </div>
 """, unsafe_allow_html=True)
@@ -321,6 +321,7 @@ st.markdown("""
 c1, c2, c3 = st.columns([1, 1, 1])
 with c2:
     if st.button("Access Wealth Management Portal", use_container_width=True):
+        st.session_state['auto_open_chat'] = True
         st.switch_page("pages/landing.py")
 
 # --- Philosophy Section ---

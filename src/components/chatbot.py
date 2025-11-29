@@ -1,5 +1,6 @@
 import streamlit as st
 from openai import OpenAI
+import streamlit.components.v1 as components
 
 def render_chatbot(page_title=None):
     """
@@ -17,6 +18,18 @@ def render_chatbot(page_title=None):
     if "OPENAI_API_KEY" not in st.secrets:
         # Fail silently or show a small toast to avoid breaking UI
         return
+
+    # --- 1.5. Check Query Params for Auto-Open ---
+    # This handles the link from the navbar (landing?chat=true)
+    try:
+        query_params = st.query_params
+        if query_params.get("chat") == "true":
+            st.session_state['auto_open_chat'] = True
+            # Clear the param so it doesn't re-open on reload
+            # Note: st.query_params is mutable in newer Streamlit versions
+            query_params["chat"] = "false"
+    except:
+        pass
 
     client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
@@ -101,14 +114,14 @@ def render_chatbot(page_title=None):
 
         /* 2. Style du bouton rond (L'élément cliquable) */
         div[data-testid="stPopover"] > button {
-            width: 60px !important;
-            height: 60px !important;
+            width: 80px !important;
+            height: 80px !important;
             border-radius: 50% !important; /* Rond parfait */
             background: linear-gradient(135deg, #0f172a 0%, #334155 100%) !important;
             border: 2px solid #38bdf8 !important; /* Bordure plus visible */
             box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4) !important; /* Glow effect */
             color: #38bdf8 !important;
-            font-size: 24px !important;
+            font-size: 32px !important;
             padding: 0 !important;
             display: flex !important;
             align-items: center !important;
@@ -248,3 +261,28 @@ def render_chatbot(page_title=None):
                     
             except Exception as e:
                 st.error(f"Error: {e}")
+
+    # --- 6. Auto-Open Logic (JS Injection) ---
+    if st.session_state.get('auto_open_chat', False):
+        # Inject JS to click the popover button
+        # We use a slightly longer interval and a timeout to be safe
+        components.html("""
+            <script>
+                console.log("Attempting to auto-open chatbot...");
+                const checkExist = setInterval(function() {
+                   // Target the button inside the popover container
+                   const btn = window.parent.document.querySelector('div[data-testid="stPopover"] button');
+                   if (btn) {
+                      console.log("Chatbot button found, clicking...");
+                      btn.click();
+                      clearInterval(checkExist);
+                   }
+                }, 200); # Check every 200ms
+                
+                // Stop checking after 5 seconds to save resources
+                setTimeout(() => { clearInterval(checkExist); }, 5000);
+            </script>
+        """, height=0, width=0)
+        
+        # Reset flag
+        st.session_state['auto_open_chat'] = False

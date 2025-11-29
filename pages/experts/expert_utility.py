@@ -822,6 +822,24 @@ with st.sidebar:
         .block-container {padding-top: 4rem; padding-bottom: 0rem;}
         section[data-testid="stSidebar"] {padding-top: 0rem;}
         div[data-testid="stSidebarUserContent"] {padding-top: 1rem;}
+        
+        /* Back Button Styling (Sidebar) */
+        section[data-testid="stSidebar"] .stButton button {
+            width: auto !important;
+            padding: 8px 20px !important;
+            background-color: transparent !important;
+            border: 1px solid #475569 !important;
+            color: #94a3b8 !important;
+            border-radius: 20px !important;
+            font-size: 14px !important;
+            transition: all 0.2s ease;
+            margin-bottom: 20px !important; /* Vertical Spacing */
+        }
+        section[data-testid="stSidebar"] .stButton button:hover {
+            border-color: #cbd5e1 !important;
+            color: #f8fafc !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
     </style>
     """, unsafe_allow_html=True)
 
@@ -846,37 +864,21 @@ with st.sidebar:
         default_n_assets = int(cfg['n_stocks'])
         if cfg.get('selection_method') == 'random': default_method = 1
 
-    # Dynamic Source Availability
-    available_sources = ["YFINANCE"]
-    # Check for CRSP file (handle both relative paths commonly used)
-    crsp_paths = [
-        "data/processed/returns_liquid_nyse80.parquet",
-        "../data/processed/returns_liquid_nyse80.parquet"
-    ]
-    crsp_available = any(os.path.exists(p) for p in crsp_paths)
-
-    if crsp_available:
-        available_sources.append("CRSP")
-
-    # Adjust default index if CRSP is not available but was selected
-    if default_source == 1 and not crsp_available:
-        default_source = 0
-
-    data_source = st.sidebar.selectbox("Data Source", available_sources, index=default_source)
+    # Data Source (Static)
+    st.caption("Data Source: YFinance")
+    data_source = "YFINANCE"
     
     col1, col2 = st.columns(2)
-    start_date = col1.date_input("Start Date", default_start)
-    end_date = col2.date_input("End Date", default_end)
-    
-    if st.button("🔄 Reload Data", use_container_width=True):
-        st.session_state.loader = None
-        st.rerun()
+    start_date = col1.date_input("Start Date", default_start, min_value=pd.to_datetime("2010-01-01"), max_value=pd.to_datetime("2024-12-31"))
+    end_date = col2.date_input("End Date", default_end, min_value=pd.to_datetime("2010-01-01"), max_value=pd.to_datetime("2024-12-31"))
     
     st.subheader("Asset Selection")
     selection_method = st.radio("Method", ["Top Market Cap", "Random Selection"], index=default_method)
-    n_assets = st.slider("Number of Assets", min_value=10, max_value=500, value=default_n_assets, step=10)
+    n_assets = st.slider("Number of Assets", min_value=10, max_value=100, value=default_n_assets, step=10)
 
     # --- Constraints ---
+    st.markdown("---")
+    st.markdown("---")
     st.header("2. Constraints")
     enable_sector_constraints = st.checkbox("Enable Sector Constraints")
     
@@ -937,25 +939,27 @@ with st.sidebar:
                 st.info("Load data to see sectors.")
 
     # Strategy Parameters
+    st.markdown("---")
+    st.markdown("---")
     st.header("3. Strategy Parameters")
     risk_aversion = st.slider("Risk Aversion (λ)", 1.0, 10.0, 5.0)
     max_turnover = st.slider("Max Monthly Turnover", 0.0, 1.0, 0.20)
     cost_bps = st.number_input("Transaction Cost (bps)", value=10) / 10000
     use_dynamic_rf = st.checkbox("Use Dynamic Risk-Free Rate (FRED)", value=False, help="Use historical Risk-Free Rate for Sharpe Ratio calculation.")
 
-    # Advanced Parameters
-    with st.expander("Advanced Parameters"):
-        cov_method = st.selectbox("Covariance Method", ["ledoit", "hist", "oas"], index=0)
+    # Advanced Method
+    st.markdown("---")
+    st.markdown("---")
+    with st.expander("Advanced Method"):
+        cov_method_display = st.selectbox("Covariance Method", ["Ledoit-Wolf", "Historic"], index=0)
+        cov_method_map = {"Ledoit-Wolf": "ledoit", "Historic": "hist"}
+        cov_method = cov_method_map[cov_method_display]
     # Solver Selection (Dynamic)
-    available_solver = get_optimal_solver()
-    solver = st.selectbox("Solver", [available_solver, "CLARABEL", "ECOS", "OSQP", "SCS"], index=0)
-    
-    if available_solver == 'MOSEK':
-        st.caption("🚀 **MOSEK Detected & Active** (Commercial Grade)")
-    else:
-        st.caption("🛡️ **CLARABEL Active** (Open Source Fallback)")
+    # Solver Selection (Hardcoded)
+    solver = "CLARABEL"
 
     st.markdown("---")
+    st.header("4. Execution")
     # Run Optimization Button - Moved to bottom of sidebar
     run_btn = st.button("▶️ Run Optimization", type="primary", use_container_width=True)
 
@@ -1037,8 +1041,7 @@ if run_btn:
                 st.error(f"Optimization failed: {e}")
 
 # Tabs
-# Tabs
-tab_opt, tab_resamp, tab_frontier = st.tabs(["📊 Optimization", "✨ Resampling", "📉 Efficient Frontier"])
+tab_opt, tab_resamp = st.tabs(["📊 Optimization", "✨ Resampling"])
 
 with tab_opt:
     st.markdown("### Base Optimization")
@@ -1069,7 +1072,7 @@ with tab_resamp:
     if st.session_state.loader is None:
         st.info("Please load data first.")
     else:
-        n_sims = st.slider("Number of Simulations", 1, 10, 5, key="n_sims_utility")
+        n_sims = st.slider("Number of Simulations", 1, 10, 1, key="n_sims_utility")
         
         if st.button("▶️ Run Resampling", key="btn_resamp_utility"):
             with st.spinner(f"Running {n_sims} simulations..."):
@@ -1115,83 +1118,3 @@ with tab_resamp:
                 cost_bps=cost_bps
             )
 
-with tab_frontier:
-    st.markdown("### 📉 Efficient Frontier Analysis")
-    st.info("Calculates the static Efficient Frontier based on the entire selected history. This helps visualize the Risk/Return trade-off available in your universe.")
-    
-    col_f1, col_f2 = st.columns([1, 3])
-    
-    with col_f1:
-        n_points = st.number_input("Number of Points", min_value=10, max_value=100, value=50, step=10)
-        calc_btn = st.button("Calculate Frontier", type="primary")
-    
-    if calc_btn:
-        with st.spinner("Calculating Efficient Frontier (solving 50+ optimizations)..."):
-            if st.session_state.loader is None:
-                st.error("Please load data first.")
-            else:
-                frontier_data = calculate_efficient_frontier(st.session_state.loader, points=n_points, solver=solver)
-            
-            if frontier_data:
-                import plotly.graph_objects as go
-                
-                # 1. Frontier Line
-                fig = go.Figure()
-                
-                fig.add_trace(go.Scatter(
-                    x=frontier_data['frontier_vol'],
-                    y=frontier_data['frontier_ret'],
-                    mode='lines',
-                    name='Efficient Frontier',
-                    line=dict(color='blue', width=3)
-                ))
-                
-                # 2. Individual Assets
-                fig.add_trace(go.Scatter(
-                    x=frontier_data['assets_vol'],
-                    y=frontier_data['assets_ret'],
-                    mode='markers',
-                    name='Assets',
-                    text=frontier_data['assets_names'],
-                    marker=dict(color='lightgrey', size=5, opacity=0.6)
-                ))
-                
-                # 3. Highlight Max Sharpe (Approximate from Frontier)
-                sharpes = np.array(frontier_data['frontier_ret']) / np.array(frontier_data['frontier_vol'])
-                idx_max_sharpe = np.argmax(sharpes)
-                
-                fig.add_trace(go.Scatter(
-                    x=[frontier_data['frontier_vol'][idx_max_sharpe]],
-                    y=[frontier_data['frontier_ret'][idx_max_sharpe]],
-                    mode='markers+text',
-                    name='Max Sharpe',
-                    text=['Max Sharpe'],
-                    textposition="top left",
-                    marker=dict(color='red', size=12, symbol='star')
-                ))
-                
-                # 4. Highlight Min Vol
-                idx_min_vol = np.argmin(frontier_data['frontier_vol'])
-                
-                fig.add_trace(go.Scatter(
-                    x=[frontier_data['frontier_vol'][idx_min_vol]],
-                    y=[frontier_data['frontier_ret'][idx_min_vol]],
-                    mode='markers+text',
-                    name='Min Volatility',
-                    text=['Min Vol'],
-                    textposition="bottom right",
-                    marker=dict(color='green', size=12, symbol='diamond')
-                ))
-                
-                fig.update_layout(
-                    title="Efficient Frontier vs Assets",
-                    xaxis_title="Annualized Volatility",
-                    yaxis_title="Annualized Return",
-                    width=800,
-                    height=600,
-                    template="plotly_white"
-                )
-                
-                st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.error("Could not calculate frontier. Check data availability.")

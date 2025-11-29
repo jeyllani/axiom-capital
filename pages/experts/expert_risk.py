@@ -21,6 +21,25 @@ from portfolio_engine.weights_management import OptimizedWeightUpdater
 st.markdown("""
 <style>
     [data-testid="stSidebar"] {display: block !important;}
+        div[data-testid="stSidebarUserContent"] {padding-top: 1rem;}
+        
+        /* Back Button Styling (Sidebar) */
+        section[data-testid="stSidebar"] .stButton button {
+            width: auto !important;
+            padding: 8px 20px !important;
+            background-color: transparent !important;
+            border: 1px solid #475569 !important;
+            color: #94a3b8 !important;
+            border-radius: 20px !important;
+            font-size: 14px !important;
+            transition: all 0.2s ease;
+            margin-bottom: 20px !important; /* Vertical Spacing */
+        }
+        section[data-testid="stSidebar"] .stButton button:hover {
+            border-color: #cbd5e1 !important;
+            color: #f8fafc !important;
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
 
     .metric-card {
         background-color: #1F2937;
@@ -46,6 +65,9 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+if st.sidebar.button("⬅️ Back to Expert Tools"):
+    st.switch_page("pages/experts/landing_expert.py")
 
 # --- Helper Functions ---
 def load_data(config):
@@ -345,32 +367,21 @@ if 'loader' in st.session_state and st.session_state.loader is not None:
 
     if cfg.get('selection_method') == 'random': default_method = 1
 
-# Dynamic Source Availability
-available_sources = ["YFINANCE"]
-crsp_paths = ["data/processed/returns_liquid_nyse80.parquet", "../data/processed/returns_liquid_nyse80.parquet"]
-crsp_available = any(os.path.exists(p) for p in crsp_paths)
-
-if crsp_available:
-    available_sources.append("CRSP")
-
-if default_source == 1 and not crsp_available:
-    default_source = 0
-
-data_source = st.sidebar.selectbox("Data Source", available_sources, index=default_source)
+# Data Source (Static)
+st.sidebar.caption("Data Source: YFinance")
+data_source = "YFINANCE"
 
 col1, col2 = st.sidebar.columns(2)
-start_date = col1.date_input("Start Date", default_start)
-end_date = col2.date_input("End Date", default_end)
-
-if st.sidebar.button("🔄 Reload Data", use_container_width=True):
-    st.session_state.loader = None
-    st.rerun()
+start_date = col1.date_input("Start Date", default_start, min_value=pd.to_datetime("2010-01-01"), max_value=pd.to_datetime("2024-12-31"))
+end_date = col2.date_input("End Date", default_end, min_value=pd.to_datetime("2010-01-01"), max_value=pd.to_datetime("2024-12-31"))
 
 st.sidebar.subheader("Asset Selection")
 selection_method = st.sidebar.radio("Method", ["Top Market Cap", "Random Selection"], index=default_method)
-n_assets = st.sidebar.slider("Number of Assets", min_value=10, max_value=500, value=default_n_assets, step=10)
+n_assets = st.sidebar.slider("Number of Assets", min_value=10, max_value=100, value=default_n_assets, step=10)
 
 # --- Constraints ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("---")
 st.sidebar.header("2. Constraints")
 enable_sector_constraints = st.sidebar.checkbox("Enable Sector Constraints")
 
@@ -407,6 +418,8 @@ if enable_sector_constraints:
             st.sidebar.info("Load data to see sectors.")
 
 # --- Strategy Parameters (Centralized Model Selection) ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("---")
 st.sidebar.header("3. Strategy Parameters")
 
 # Model Selection
@@ -445,21 +458,21 @@ elif risk_model_type == "Risk Budgeting":
 max_turnover = st.sidebar.slider("Max Monthly Turnover", 0.0, 1.0, 0.20)
 long_only = st.sidebar.checkbox("Long Only", value=True)
 cost_bps = st.sidebar.number_input("Transaction Cost (bps)", value=10) / 10000
-use_dynamic_rf = st.sidebar.checkbox("Use Dynamic Risk-Free Rate", value=False)
+use_dynamic_rf = st.sidebar.checkbox("Use Dynamic Risk-Free Rate (FRED)", value=False)
 
-# --- Advanced Parameters ---
-with st.sidebar.expander("Advanced Parameters"):
-    cov_method = st.sidebar.selectbox("Covariance Method", ["ledoit", "hist", "oas"], index=0)
+# --- Advanced Method ---
+st.sidebar.markdown("---")
+st.sidebar.markdown("---")
+with st.sidebar.expander("Advanced Method"):
+    cov_method_display = st.selectbox("Covariance Method", ["Ledoit-Wolf", "Historic"], index=0)
+    cov_method_map = {"Ledoit-Wolf": "ledoit", "Historic": "hist"}
+    cov_method = cov_method_map[cov_method_display]
 
-    available_solver = get_optimal_solver()
-    solver = st.sidebar.selectbox("Solver", [available_solver, "CLARABEL", "ECOS", "OSQP", "SCS"], index=0)
-
-    if available_solver == 'MOSEK':
-        st.sidebar.caption("🚀 **MOSEK Detected & Active**")
-    else:
-        st.sidebar.caption("🛡️ **CLARABEL Active**")
+    # Solver Selection (Hardcoded)
+    solver = "CLARABEL"
 
 st.sidebar.markdown("---")
+st.sidebar.header("4. Execution")
 run_btn = st.sidebar.button("▶️ Run Optimization", type="primary", use_container_width=True)
 
 # ==============================================================================
@@ -1052,7 +1065,7 @@ def display_risk_results(results, loader, title="Optimization Results", benchmar
             )
 
 # --- MAIN TABS ---
-tab_opt, tab_resamp, tab_frontier = st.tabs(["📊 Optimization Results", "✨ Resampling", "📉 Efficient Frontier"])
+tab_opt, tab_resamp = st.tabs(["📊 Optimization Results", "✨ Resampling"])
 
 with tab_opt:
     if 'risk_results' in st.session_state:
@@ -1068,7 +1081,7 @@ with tab_resamp:
         st.warning("Please load data first.")
     else:
         # Slider 1-10 (Explicit)
-        n_sims = st.slider("Number of Simulations", 1, 10, 2, key="n_sims_risk")
+        n_sims = st.slider("Number of Simulations", 1, 10, 1, key="n_sims_risk")
         st.caption(f"Running {n_sims} simulations.")
         
         if st.button("▶️ Run Resampled Optimization", key="btn_resamp_risk"):
@@ -1107,99 +1120,4 @@ with tab_resamp:
         base_results = st.session_state.get('risk_results')
         display_risk_results(st.session_state.risk_resamp_results, st.session_state.loader, "Resampled Results", benchmark_results=base_results)
 
-with tab_frontier:
-    st.markdown("### 📉 Efficient Frontier Analysis")
-    st.info("Calculates the static Efficient Frontier based on the entire selected history. This helps visualize the Risk/Return trade-off available in your universe.")
-    
-    col_f1, col_f2 = st.columns([1, 3])
-    
-    with col_f1:
-        n_points = st.number_input("Number of Points", min_value=10, max_value=100, value=50, step=10)
-        calc_btn = st.button("Calculate Frontier", type="primary")
-    
-    if calc_btn:
-        with st.spinner("Calculating Efficient Frontier (solving 50+ optimizations)..."):
-            if st.session_state.loader is None:
-                st.error("Please load data first.")
-            else:
-                frontier_data = calculate_efficient_frontier(st.session_state.loader, points=n_points, solver=solver)
-            
-            if frontier_data:
-                # Plot
-                fig = go.Figure()
-                
-                # 1. Frontier Line
-                fig.add_trace(go.Scatter(
-                    x=frontier_data['frontier_vol'],
-                    y=frontier_data['frontier_ret'],
-                    mode='lines',
-                    name='Efficient Frontier',
-                    line=dict(color='#3B82F6', width=3)
-                ))
-                
-                # 2. Assets Scatter
-                fig.add_trace(go.Scatter(
-                    x=frontier_data['assets_vol'],
-                    y=frontier_data['assets_ret'],
-                    mode='markers',
-                    name='Assets',
-                    text=frontier_data['assets_names'],
-                    marker=dict(color='#9CA3AF', size=5, opacity=0.6)
-                ))
-                
-                # 3. Highlight Max Sharpe (Approximate from Frontier)
-                sharpes = np.array(frontier_data['frontier_ret']) / np.array(frontier_data['frontier_vol'])
-                idx_max_sharpe = np.argmax(sharpes)
-                
-                fig.add_trace(go.Scatter(
-                    x=[frontier_data['frontier_vol'][idx_max_sharpe]],
-                    y=[frontier_data['frontier_ret'][idx_max_sharpe]],
-                    mode='markers+text',
-                    name='Max Sharpe',
-                    text=['Max Sharpe'],
-                    textposition="top left",
-                    marker=dict(color='#EF4444', size=12, symbol='star')
-                ))
-                
-                # 4. Highlight Min Vol
-                idx_min_vol = np.argmin(frontier_data['frontier_vol'])
-                
-                fig.add_trace(go.Scatter(
-                    x=[frontier_data['frontier_vol'][idx_min_vol]],
-                    y=[frontier_data['frontier_ret'][idx_min_vol]],
-                    mode='markers+text',
-                    name='Min Volatility',
-                    text=['Min Vol'],
-                    textposition="bottom right",
-                    marker=dict(color='#10B981', size=12, symbol='diamond')
-                ))
-                
-                # 5. Current Portfolio (if available)
-                if 'risk_results' in st.session_state:
-                    curr_res = st.session_state.risk_results
-                    # Calculate annualized ret/vol for the strategy
-                    curr_rets = curr_res['values'].pct_change().dropna()
-                    curr_ann_ret = curr_rets.mean() * 12
-                    curr_ann_vol = curr_rets.std() * np.sqrt(12)
-                    
-                    fig.add_trace(go.Scatter(
-                        x=[curr_ann_vol],
-                        y=[curr_ann_ret],
-                        mode='markers+text',
-                        name='Current Strategy',
-                        text=['Strategy'],
-                        textposition="top center",
-                        marker=dict(color='#F59E0B', size=14, symbol='cross')
-                    ))
-
-                fig.update_layout(
-                    title="Efficient Frontier vs Assets",
-                    xaxis_title="Annualized Volatility",
-                    yaxis_title="Annualized Return",
-                    template="plotly_dark",
-                    height=600,
-                    xaxis=dict(tickformat=".1%"),
-                    yaxis=dict(tickformat=".1%")
-                )
-                st.plotly_chart(fig, use_container_width=True)
 
