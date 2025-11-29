@@ -69,7 +69,9 @@ st.markdown("""
     /* Common Card Styling */
     /* Common Card Styling */
     [data-testid="column"] .stButton button,
-    [data-testid="column"] button {
+    [data-testid="column"] button,
+    [data-testid="stColumn"] .stButton button,
+    [data-testid="stColumn"] button {
         width: 100% !important;
         height: auto !important;
         min-height: 220px !important;
@@ -88,7 +90,9 @@ st.markdown("""
 
     /* --- COLUMN 1: DEFENSIVE (Blue) --- */
     [data-testid="column"]:nth-of-type(1) .stButton button,
-    [data-testid="column"]:nth-of-type(1) button {
+    [data-testid="column"]:nth-of-type(1) button,
+    [data-testid="stColumn"]:nth-of-type(1) .stButton button,
+    [data-testid="stColumn"]:nth-of-type(1) button {
         border-top: 4px solid #38bdf8 !important;
         background: linear-gradient(180deg, rgba(56, 189, 248, 0.05) 0%, rgba(30, 41, 59, 0.4) 100%) !important;
     }
@@ -107,7 +111,9 @@ st.markdown("""
 
     /* --- COLUMN 2: BALANCED (Purple) --- */
     [data-testid="column"]:nth-of-type(2) .stButton button,
-    [data-testid="column"]:nth-of-type(2) button {
+    [data-testid="column"]:nth-of-type(2) button,
+    [data-testid="stColumn"]:nth-of-type(2) .stButton button,
+    [data-testid="stColumn"]:nth-of-type(2) button {
         border-top: 4px solid #a855f7 !important;
         background: linear-gradient(180deg, rgba(168, 85, 247, 0.05) 0%, rgba(30, 41, 59, 0.4) 100%) !important;
     }
@@ -126,7 +132,9 @@ st.markdown("""
 
     /* --- COLUMN 3: AGGRESSIVE (Orange) --- */
     [data-testid="column"]:nth-of-type(3) .stButton button,
-    [data-testid="column"]:nth-of-type(3) button {
+    [data-testid="column"]:nth-of-type(3) button,
+    [data-testid="stColumn"]:nth-of-type(3) .stButton button,
+    [data-testid="stColumn"]:nth-of-type(3) button {
         border-top: 4px solid #f97316 !important;
         background: linear-gradient(180deg, rgba(249, 115, 22, 0.05) 0%, rgba(30, 41, 59, 0.4) 100%) !important;
     }

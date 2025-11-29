@@ -91,7 +91,10 @@ def render_chatbot(page_title=None):
             position: fixed;
             bottom: 30px;
             right: 30px;
+            width: auto !important;
+            height: auto !important;
             z-index: 9999;
+            display: inline-block !important;
         }
         
         /* Style the button inside */
