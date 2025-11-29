@@ -1,0 +1,13 @@
+streamlit
+pandas
+numpy
+plotly
+riskfolio-lib
+scipy
+openai
+polars
+matplotlib
+seaborn
+pandas_datareader
+cvxpy
+clarabel
