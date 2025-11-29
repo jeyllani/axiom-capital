@@ -61,8 +61,8 @@ The platform currently relies on **YFinance** for market data acquisition. The a
 
 1.  **Clone the repository**
     ```bash
-    git clone <repository-url>
-    cd AXIOM-Capital
+    git clone https://github.com/jeyllani/axiom-capital.git
+    cd axiom-capital
     ```
 
 2.  **Install dependencies**
